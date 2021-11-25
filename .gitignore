@@ -1,0 +1,10 @@
+.idea
+.code
+.vscode
+.vcode
+.venv
+.env
+env
+build
+**/__pycache__/**
+
