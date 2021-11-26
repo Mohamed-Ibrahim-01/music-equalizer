@@ -1,12 +1,10 @@
-import pandas as pd
 import os
 import librosa
 from PyQt5 import QtWidgets as qtw
-import numpy as np
 
 
 def openSound(window):
-    path, _ = qtw.QFileDialog.getOpenFileName(window, 'Open File', "sample.wav","Sounds(*.wav)")
+    path, _ = qtw.QFileDialog.getOpenFileName(window, 'Open File', "sample.wav", "Sounds(*.wav)")
     return loadSound(path)
 
 
@@ -15,15 +13,14 @@ def parsePath(path):
     dot_splits = file_name.split(".")
     extension = dot_splits[-1] if len(dot_splits) > 1 else ""
     name = "".join(dot_splits[0:-1])
+    return name, extension
 
-    return (name, extension)
 
 def loadSound(path):
     name, extension = parsePath(path)
-    #DEBUG 
+    # DEBUG
     print(name, extension)
     if extension == "wav":
-        full_data, sr = librosa.core.load(path)
-        return (True, name, path, (full_data, sr))
+        return True, name, path
     else:
-        return (False, None, None, (None, None))
+        return False, None, None

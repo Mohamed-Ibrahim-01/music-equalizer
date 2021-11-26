@@ -12,6 +12,7 @@ tones = {}
 
 class KeyButton(QtWidgets.QPushButton):
     triggered = QtCore.pyqtSignal(int, bool)
+
     def __init__(self, key, isBlack=False):
         super().__init__()
         self.key = key
@@ -26,7 +27,7 @@ class KeyButton(QtWidgets.QPushButton):
 
         # ensure that the key expands vertically
         self.setSizePolicy(QtWidgets.QSizePolicy.Preferred,
-            QtWidgets.QSizePolicy.Expanding)
+                           QtWidgets.QSizePolicy.Expanding)
 
         # connect the pressed and released (not clicked!) signals to our custom one
         self.pressed.connect(lambda: self.triggered.emit(key, True))
@@ -36,7 +37,6 @@ class Keyboard(QtWidgets.QWidget):
     def __init__(self, octaves=2, octaveStart=3):
         super().__init__()
         layout = QtWidgets.QGridLayout(self)
-        x = threading.Thread(target=self.load_piano, args=(tones,)).start()
 
         # the ratio between key heights: white keys are 1/3 longer than black ones
         layout.setRowStretch(0, 2)
@@ -117,11 +117,13 @@ class Keyboard(QtWidgets.QWidget):
 
     def load_piano(self, tones):
         for key in KeyNames:
-          for octave in octaves:
-            tone = ps.make_wav(((f"{key}{octave}",1),), silent=True)
-            tones[f"{key}{octave}"] = tone
-        tones["c5"] = ps.make_wav((("c5",1),), silent=True)
+            for octave in octaves:
+                tone = ps.make_wav(((f"{key}{octave}", 1),), silent=True)
+                tones[f"{key}{octave}"] = tone
+        tones["c5"] = ps.make_wav((("c5", 1),), silent=True)
 
+    def load_tones(self):
+        self.load_piano(tones)
 
     def keyTriggered(self, key, pressed):
         octave, keyIdx = divmod(key, 12)
@@ -133,6 +135,7 @@ class Keyboard(QtWidgets.QWidget):
 
 if __name__ == '__main__':
     import sys
+
     app = QtWidgets.QApplication(sys.argv)
     keyboard = Keyboard()
     keyboard.show()

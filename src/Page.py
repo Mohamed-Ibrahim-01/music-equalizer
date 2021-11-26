@@ -5,22 +5,22 @@ from VirtualInstruments import VirtualInstruments
 from SignalsStore import SignalsStore
 from EQ import EQ
 
-class Page(qtw.QTabWidget):
 
+class Page(qtw.QTabWidget):
     stateChanged = qtc.pyqtSignal(str)
+
     def __init__(self):
         super().__init__()
         uic.loadUi("src/ui/page.ui", self)
-        self.setMinimumSize(1000,500)
-        self.initGlobals()
-        self.initBody()
-        self.initActions()
+        self.setMinimumSize(1000, 500)
 
-    def initGlobals(self):
         self.curr_sound = None
         self.sound_store = SignalsStore()
         self.equalizer = EQ()
         self.instruments = VirtualInstruments()
+
+        self.initBody()
+        self.initActions()
 
     def initBody(self):
         eq_tab = self.findChild(qtw.QWidget, "EQ")
@@ -30,9 +30,11 @@ class Page(qtw.QTabWidget):
 
     def initActions(self):
         self.equalizer.stateChanged.connect(
-            lambda msg : self.stateChanged.emit(msg)
-            #lambda msg : print(msg)
+            lambda msg: self.stateChanged.emit(msg)
+            # lambda msg : print(msg)
         )
+        self.sound_store.newSignalAdded.connect(self.equalizer.addNewSong)
+
 
     def updatePage(self):
         pass

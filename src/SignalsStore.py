@@ -1,29 +1,51 @@
 from singleton_decorator import singleton
 from PyQt5 import QtMultimedia as qtm
-from PyQt5 import QtWidgets as qtw
 from PyQt5 import QtCore as qtc
-from scipy.io import wavfile
-import io
+from PyQt5 import QtWidgets as qtw
+from pydub import AudioSegment
+from pydub import utils as AudioUtils
+import wave
+
 
 @singleton
-class SignalsStore:
+class SignalsStore(qtw.QWidget):
+    newSignalAdded = qtc.pyqtSignal(str)
+
     def __init__(self):
-        self._signals = {}
+        super().__init__()
+        self._audioSegments = {}
 
     def addSignal(self, signal):
         if isinstance(signal, tuple):
-            name, path, data = signal
-            self._signals[name] = (path, data)
-            return len(self._signals)-1
+            name, path = signal
+            segment = AudioSegment.from_wav(path)
+            self._audioSegments[name] = segment
+            self.newSignalAdded.emit(name)
+            return len(self._audioSegments) - 1
 
     def getSignal(self, name):
-        return self._signals.get(name)
+        return self._audioSegments.get(name)
+
+    def getSampleRate(self, name):
+        segment = self._audioSegments.get(name)
+        return segment.frame_rate
+
+    def getChunks(self, name, chunksize=1024):
+        print(name)
+        segment = self._audioSegments.get(name)
+        sample_rate = segment.frame_rate
+        chunks = AudioUtils.make_chunks(segment, chunk_length=int(1000.0*chunksize/sample_rate))
+        return chunks
 
     def getNumSignals(self):
-        return len(self._signals)
+        return len(self._audioSegments)
 
     def getSignalsNames(self):
-        return [channel[0] for channel in self._signals]
+        return [channel[0] for channel in self._audioSegments]
+
+    def getWave(self, name):
+        path = self.getSignal(name)[0]
+        return wave.open(path, 'rb')
 
     def getMedia(self, name):
         path = self.getSignal(name)[0]
