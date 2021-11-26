@@ -9,6 +9,7 @@ from PyQt5 import QtCore as qtc
 from PyQt5 import uic
 from SignalsStore import SignalsStore
 from SoundList import SoundList
+from AudioStream import AudioStream
 
 
 class EQ(qtw.QWidget):
@@ -21,6 +22,7 @@ class EQ(qtw.QWidget):
         self.sound_store = SignalsStore()
         self.loaded_songs = SoundList()
         self.spectrogram = Spectrogram()
+        self.stream = AudioStream()
         self.player = Player()
         self.viewer = Viewer()
         self.equalizer = Equalizer()
@@ -28,11 +30,10 @@ class EQ(qtw.QWidget):
 
         self.state = "stopped"
         self.curr_song = None
+
         self.chunk_size = 1024
         self.curr_song_samplerate = 44100
-        self.song_chunks = []
-        self.curr_chunk = 0
-        self.timeout = self.chunk_size / self.curr_song_samplerate
+        self.timeout = int(1000*self.chunk_size / self.curr_song_samplerate)
 
         self.initBody()
         self.initActions()
@@ -44,6 +45,11 @@ class EQ(qtw.QWidget):
 
         # self.equalizer.changed.connect(self.update)
         self.loaded_songs.song_selected.connect(lambda name: self.changeSongName(name))
+        self.stream.audioEnded.connect(self.endAudio)
+
+    def endAudio(self, msg):
+        self.state = "stopped"
+        print("HERE")
 
     def initBody(self):
         self.viewer_layout.addWidget(self.viewer)
@@ -53,12 +59,13 @@ class EQ(qtw.QWidget):
         self.loaded_songs_layout.addWidget(self.loaded_songs)
 
     def play(self, msg):
-        print(msg)
         if self.loaded_songs.songsNum() < 1 or self.state == "playing":
+            print("playyyyyyyyyyyyyyyyyyyyyyyyying")
             return
         if self.state == "stopped":
-            self.song_chunks = self.sound_store.getChunks(self.curr_song)
-            self.curr_song_samplerate = self.sound_store.getSampleRate(self.curr_song)
+            print("stopppppppppppppppppppppppped")
+            self.stream.setSong(self.curr_song)
+            self.stream.start()
 
         self.timer.timeout.connect(self.updateSong)
         self.timer.start(self.timeout)
@@ -73,14 +80,10 @@ class EQ(qtw.QWidget):
         self.timer.stop()
         self.viewer.clear()
         self.spectrogram.clear()
-        self.curr_chunk = 0
         self.stateChanged.emit("Music stopped...")
 
     def updateSong(self):
-        #chunk = self.stream.getChunk()
-        chunk = self.song_chunks[self.curr_chunk].get_array_of_samples()
-        chunk = np.array(chunk)
-        self.curr_chunk += 1
+        chunk = self.stream.getChunk()
         self.viewer.update(chunk)
         # self.player.update(chunk)
         # self.spectrogram.update(chunk)

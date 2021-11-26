@@ -20,13 +20,12 @@ class Viewer(pg.PlotWidget):
         self.enableAutoRange('xy', False)
         self.curve = self.plot(pen=self.pen)
 
-
     def updateGraph(self):
-        print("--------------------------------------")
-        print(len(self.audio), len(self.time))
-        print(self.audio[0], len(self.time))
-        print("--------------------------------------")
-        self.curve.setData(x=self.time, y=np.float32(self.audio))
+        time_length, audio_length = len(self.time), len(self.audio)
+        diff = time_length - audio_length
+        if time_length > audio_length:
+            self.audio = np.pad(self.audio, (0, diff), 'constant', constant_values=(0, 0))
+        self.curve.setData(x=self.time, y=np.float32(self.audio[:self.time.shape[0]]))
 
     def update(self, chunk):
         self.audio = chunk
