@@ -29,10 +29,13 @@ class EQ(qtw.QWidget):
         self.timer = qtc.QTimer()
 
         self.state = "stopped"
-        self.curr_song = None
 
+        self.curr_song = None
         self.chunk_size = 1024
         self.curr_song_samplerate = 44100
+        self.curr_song_sample_width = 2
+        self.curr_song_channels = 1
+
         self.timeout = int(1000*self.chunk_size / self.curr_song_samplerate)
 
         self.initBody()
@@ -44,12 +47,14 @@ class EQ(qtw.QWidget):
         self.player.stopped.connect(self.stop)
 
         # self.equalizer.changed.connect(self.update)
-        self.loaded_songs.song_selected.connect(lambda name: self.changeSongName(name))
+        self.loaded_songs.song_selected.connect(lambda name: self.changeSong(name))
         self.stream.audioEnded.connect(self.endAudio)
+        self.timer.timeout.connect(self.updateSong)
 
     def endAudio(self, msg):
         self.state = "stopped"
-        print("HERE")
+        self.player.stop()
+        print("audio ended")
 
     def initBody(self):
         self.viewer_layout.addWidget(self.viewer)
@@ -60,36 +65,45 @@ class EQ(qtw.QWidget):
 
     def play(self, msg):
         if self.loaded_songs.songsNum() < 1 or self.state == "playing":
-            print("playyyyyyyyyyyyyyyyyyyyyyyyying")
             return
         if self.state == "stopped":
-            print("stopppppppppppppppppppppppped")
+            print(self.curr_song)
             self.stream.setSong(self.curr_song)
-            self.stream.start()
 
-        self.timer.timeout.connect(self.updateSong)
+        self.stream.start()
         self.timer.start(self.timeout)
         self.stateChanged.emit("Playing music...")
         self.state = "playing"
 
     def pause(self):
+        self.stream.stop()
         self.timer.stop()
+        self.state = "paused"
         self.stateChanged.emit("Music paused...")
 
     def stop(self):
         self.timer.stop()
-        self.viewer.clear()
+        self.stream.stop()
+        self.player.stop()
         self.spectrogram.clear()
+        self.state = "stopped"
         self.stateChanged.emit("Music stopped...")
 
     def updateSong(self):
-        chunk = self.stream.getChunk()
-        self.viewer.update(chunk)
-        # self.player.update(chunk)
+        chunk_arr, chunk_segment = self.stream.getChunk()
+        self.player.update_chunk(chunk_segment)
+        self.viewer.update_chunk(chunk_arr)
+        # self.player.play(chunk[1])
         # self.spectrogram.update(chunk)
 
     def addNewSong(self, name):
         self.loaded_songs.addNewSong(name)
 
-    def changeSongName(self, name):
+    def changeSong(self, name):
+        seg = self.sound_store.getAudioSegment(name)
+        chunk_time = self.sound_store.getChunkTime(name)
+        self.curr_song_samplerate = seg.frame_rate
+        self.curr_song_sample_width = seg.sample_width
+        self.curr_song_channels = seg.channels
         self.curr_song = name
+        self.player.setCurrSong(name, seg.frame_rate, seg.channels, len(seg), chunk_time)

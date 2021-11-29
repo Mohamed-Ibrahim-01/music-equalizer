@@ -1,4 +1,3 @@
-import matplotlib.pyplot as plt
 from PyQt5 import QtWidgets as qtw
 from PyQt5 import QtCore as qtc
 from PyQt5 import uic

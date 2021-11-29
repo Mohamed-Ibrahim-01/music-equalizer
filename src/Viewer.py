@@ -27,7 +27,7 @@ class Viewer(pg.PlotWidget):
             self.audio = np.pad(self.audio, (0, diff), 'constant', constant_values=(0, 0))
         self.curve.setData(x=self.time, y=np.float32(self.audio[:self.time.shape[0]]))
 
-    def update(self, chunk):
+    def update_chunk(self, chunk):
         self.audio = chunk
         self.updateGraph()
 
