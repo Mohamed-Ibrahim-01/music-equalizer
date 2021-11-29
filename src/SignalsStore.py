@@ -46,11 +46,6 @@ class SignalsStore(qtw.QWidget):
         chunk_time = int(1000.0*chunksize/sample_rate)
         return chunk_time
 
-    def getBigChunks(self, name):
-        segment = self._audioSegments.get(name)
-        chunks = AudioUtils.make_chunks(segment, chunk_length=2000)
-        return chunks
-
     def getNumSignals(self):
         return len(self._audioSegments)
 

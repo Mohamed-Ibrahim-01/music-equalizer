@@ -26,17 +26,16 @@ class AudioStream(qtw.QWidget):
         self.stream = None
         self.song = None
 
-        self.stream_timer = qtc.QTimer()
-        self.stream_timer.timeout.connect(self.new_chunk)
-        self.stream_timeout = 0
+        # self.stream_timer = qtc.QTimer()
+        # self.stream_timer.timeout.connect(self.new_chunk)
+        # self.stream_timeout = 0
 
     def setSong(self, song_name, chunksize=1024):
         self.song = self.sound_store.getAudioSegment(song_name)
         self.chunks = self.sound_store.getChunks(song_name)
-        self.bigChunks = self.sound_store.getBigChunks(song_name)
         self.chunksize = chunksize
         self.sample_rate = self.song.frame_rate
-        self.stream_timeout = int(1000*self.chunksize / self.sample_rate)
+        # self.stream_timeout = int(1000*self.chunksize / self.sample_rate)
 
     def setChunks(self, chunks):
         self.chunks = chunks
@@ -51,6 +50,7 @@ class AudioStream(qtw.QWidget):
         self.curr_chunk += 1
 
     def getChunk(self):
+        self.new_chunk()
         return self.frames[-1], self.chunks[self.curr_chunk]
 
     def getBigChunk(self):
@@ -58,7 +58,8 @@ class AudioStream(qtw.QWidget):
         return self.bigChunks[self.curr_chunk]
 
     def start(self):
-        self.stream_timer.start(self.stream_timeout)
+        pass
+        # self.stream_timer.start(self.stream_timeout)
 
     def stop(self):
         self.curr_chunk = 0

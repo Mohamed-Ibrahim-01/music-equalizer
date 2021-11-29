@@ -1,8 +1,9 @@
-import  numpy as np
+import numpy as np
 from Player import Player
 from Viewer import Viewer
 from Spectrogram import Spectrogram
 from Equalizer import Equalizer
+from pydub import scipy_effects
 
 from PyQt5 import QtWidgets as qtw
 from PyQt5 import QtCore as qtc
@@ -91,10 +92,14 @@ class EQ(qtw.QWidget):
 
     def updateSong(self):
         chunk_arr, chunk_segment = self.stream.getChunk()
-        self.player.update_chunk(chunk_segment)
+        processed_segment = scipy_effects.eq(chunk_segment, 5000, bandwidth=1000, gain_dB=-20, order=8)
+        processed_segment = scipy_effects.eq(processed_segment, 10000, bandwidth=1000, gain_dB=20, order=8)
+        processed_segment = scipy_effects.eq(processed_segment, 15000, bandwidth=1000, gain_dB=-20, order=8)
+        chunk_arr = np.array(processed_segment.get_array_of_samples())
         self.viewer.update_chunk(chunk_arr)
-        # self.player.play(chunk[1])
-        # self.spectrogram.update(chunk)
+        self.spectrogram.update_chunk(chunk_arr)
+
+        self.player.update_chunk(chunk_segment)
 
     def addNewSong(self, name):
         self.loaded_songs.addNewSong(name)

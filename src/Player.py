@@ -96,32 +96,33 @@ class AudioPlayer:
 
     def _play(self, samplerate, chunk_time):
         def __callback(indata, outdata, frames, time, status):
-            print("I'm here th call back")
+            print(f"Call back here : curr chunk -> {self.curr_chunk} and chunks -> {len(self.chunks)}")
             chunk_data = self.chunks[self.curr_chunk]
-            print(len(chunk_data))
             raw_data = self._resize(outdata, chunk_data)
             outdata[:] = raw_data
             self.curr_chunk += 1
             if self.stopped:
-                print("TRYYYYYYYYYYYYy")
+                print("Player has stopped")
                 raise sd.CallbackStop()
+
             if self.curr_chunk == len(self.chunks):
+                print("No chunks available")
                 raise sd.CallbackStop()
 
         with sd.RawStream(channels=self.channels,
                           dtype='int16',
                           callback=__callback,
                           blocksize=int(samplerate * chunk_time / 1000),
-                          dither_off=True):
+                          latency=False,
+                          dither_off=False):
 
-            print("Hey i'm sleeping here")
             sd.sleep(self.song_duration * 1000)
 
     def play(self):
         self.stopped = False
-        print("Hey Another world starts from here")
         playing_thread = threading.Thread(target=self._play, args=(self.samplerate, self.chunk_time))
         try:
+            playing_thread.daemon = True
             playing_thread.start()
         finally:
             print("Done")
