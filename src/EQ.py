@@ -1,4 +1,5 @@
 import numpy as np
+import time
 from Player import Player
 from Viewer import Viewer
 from Spectrogram import Spectrogram
@@ -11,6 +12,7 @@ from PyQt5 import uic
 from SignalsStore import SignalsStore
 from SoundList import SoundList
 from AudioStream import AudioStream
+from lauda import stopwatch
 
 
 class EQ(qtw.QWidget):
@@ -43,17 +45,18 @@ class EQ(qtw.QWidget):
         self.initActions()
 
     def initActions(self):
-        self.player.played.connect(lambda msg: self.play(msg))
+        self.player.played.connect(self.play)
         self.player.paused.connect(self.pause)
         self.player.stopped.connect(self.stop)
 
         # self.equalizer.changed.connect(self.update)
-        self.loaded_songs.song_selected.connect(lambda name: self.changeSong(name))
+        self.loaded_songs.song_selected.connect(self.changeSong)
         self.stream.audioEnded.connect(self.endAudio)
         self.timer.timeout.connect(self.updateSong)
 
     def endAudio(self, msg):
         self.state = "stopped"
+        self.timer.stop()
         self.player.stop()
         print("audio ended")
 
@@ -71,8 +74,8 @@ class EQ(qtw.QWidget):
             print(self.curr_song)
             self.stream.setSong(self.curr_song)
 
-        self.stream.start()
         self.timer.start(self.timeout)
+        self.spectrogram.start()
         self.stateChanged.emit("Playing music...")
         self.state = "playing"
 
@@ -90,16 +93,20 @@ class EQ(qtw.QWidget):
         self.state = "stopped"
         self.stateChanged.emit("Music stopped...")
 
+    @stopwatch
     def updateSong(self):
-        chunk_arr, chunk_segment = self.stream.getChunk()
-        processed_segment = scipy_effects.eq(chunk_segment, 5000, bandwidth=1000, gain_dB=-20, order=8)
-        processed_segment = scipy_effects.eq(processed_segment, 10000, bandwidth=1000, gain_dB=20, order=8)
-        processed_segment = scipy_effects.eq(processed_segment, 15000, bandwidth=1000, gain_dB=-20, order=8)
+        stream_chunk = self.stream.getChunk()
+        if stream_chunk is None:
+            self.timer.stop()
+            return
+        chunk_arr, chunk_segment = stream_chunk
+        processed_segment = scipy_effects.eq(
+            chunk_segment, 5000, bandwidth=1000, gain_dB=10, order=8
+        )
         chunk_arr = np.array(processed_segment.get_array_of_samples())
+        self.player.update_chunk(chunk_segment)
         self.viewer.update_chunk(chunk_arr)
         self.spectrogram.update_chunk(chunk_arr)
-
-        self.player.update_chunk(chunk_segment)
 
     def addNewSong(self, name):
         self.loaded_songs.addNewSong(name)

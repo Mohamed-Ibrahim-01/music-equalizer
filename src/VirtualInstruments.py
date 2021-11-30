@@ -1,5 +1,3 @@
-import numpy as np
-import matplotlib as plt
 from PyQt5 import QtWidgets as qtw
 from PyQt5 import QtCore as qtc
 from PyQt5 import uic
@@ -36,9 +34,9 @@ class VirtualInstruments(qtw.QWidget):
             "Guitar": ("fa5s.guitar", guitar, 1),
             "Drum": ("fa5s.drum", drum, 2)
         }
-        self.initInstrumnets()
+        self.initInstruments()
 
-    def initInstrumnets(self):
+    def initInstruments(self):
         for inst_name in self.instruments.keys():
             inst_icon = QIconClickable(inst_name, self.instruments[inst_name][0], color='white')
             inst_icon.setSizePolicy(qtw.QSizePolicy.Policy.Maximum, qtw.QSizePolicy.Policy.Maximum)

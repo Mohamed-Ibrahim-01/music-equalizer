@@ -7,6 +7,7 @@ from collections import deque
 import sounddevice as sd
 from pydub import AudioSegment, utils
 import threading
+from thread_decorator import threaded
 
 
 class Player(qtw.QWidget):
@@ -75,6 +76,7 @@ class AudioPlayer:
         self.channels = 1
         self.chunk_time = 23
         self.song_duration = 50000
+        self.playing_thread = threading.Thread(target=self._play, args=(self.samplerate, self.chunk_time))
 
     def setAudio(self, samplerate, channels, duration):
         self.curr_chunk = 0
@@ -95,7 +97,7 @@ class AudioPlayer:
             return chunk_data.raw_data[:len(outdata)]
 
     def _play(self, samplerate, chunk_time):
-        def __callback(indata, outdata, frames, time, status):
+        def __callback(outdata, frames, time, status):
             print(f"Call back here : curr chunk -> {self.curr_chunk} and chunks -> {len(self.chunks)}")
             chunk_data = self.chunks[self.curr_chunk]
             raw_data = self._resize(outdata, chunk_data)
@@ -109,23 +111,26 @@ class AudioPlayer:
                 print("No chunks available")
                 raise sd.CallbackStop()
 
-        with sd.RawStream(channels=self.channels,
-                          dtype='int16',
-                          callback=__callback,
-                          blocksize=int(samplerate * chunk_time / 1000),
-                          latency=False,
-                          dither_off=False):
+        with sd.RawOutputStream(channels=self.channels,
+                                dtype='int16',
+                                callback=__callback,
+                                blocksize=int(samplerate * chunk_time / 1000),
+                                latency=False,
+                                dither_off=False):
 
             sd.sleep(self.song_duration * 1000)
 
     def play(self):
         self.stopped = False
-        playing_thread = threading.Thread(target=self._play, args=(self.samplerate, self.chunk_time))
-        try:
-            playing_thread.daemon = True
-            playing_thread.start()
-        finally:
-            print("Done")
+        if not self.playing_thread.is_alive():
+            self.playing_thread = threading.Thread(target=self._play, args=(self.samplerate, self.chunk_time))
+            try:
+                self.playing_thread.daemon = True
+                self.playing_thread.start()
+            finally:
+                print("Done")
+        else:
+            self.playing_thread.run()
 
     def stop(self):
         self.stopped = True

@@ -42,7 +42,4 @@ class SoundList(qtw.QWidget):
         color = qtg.QBrush()
         color.setColor(qtg.QColor("#2a8aff"))
         curr_song.setBackground(color)
-        print("------------------------")
-        print()
-        print("------------------------")
         self.song_selected.emit(self.loaded_songs.itemWidget(curr_song).text())
