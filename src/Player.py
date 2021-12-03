@@ -1,13 +1,13 @@
+
+from loguru import logger
 from PyQt5 import uic
 from PyQt5 import QtCore as qtc
 from PyQt5 import QtWidgets as qtw
 from SignalsStore import SignalsStore
-from pydub import AudioSegment
-from collections import deque
 import sounddevice as sd
 from pydub import AudioSegment, utils
 import threading
-from thread_decorator import threaded
+logger.add("file_{time}.log")
 
 
 class Player(qtw.QWidget):
@@ -18,13 +18,11 @@ class Player(qtw.QWidget):
     def __init__(self):
         super().__init__()
         uic.loadUi("src/ui/player.ui", self)
-        self.button_pause.setIcon(self.style().standardIcon(qtw.QStyle.StandardPixmap.SP_MediaPause))
         self.button_play.setIcon(self.style().standardIcon(qtw.QStyle.StandardPixmap.SP_MediaPlay))
         self.button_stop.setIcon(self.style().standardIcon(qtw.QStyle.StandardPixmap.SP_MediaStop))
 
-        self.button_play.clicked.connect(lambda: self.played.emit("played"))
-        self.button_stop.clicked.connect(lambda: self.stopped.emit("stopped"))
-        self.button_pause.clicked.connect(lambda: self.stopped.emit("stopped"))
+        self.button_play.clicked.connect(self.play_handler)
+        self.button_stop.clicked.connect(self.stop_handler)
 
         self.curr_song = ""
         self.samplerate = 44100
@@ -39,6 +37,23 @@ class Player(qtw.QWidget):
         self._player = AudioPlayer(chunks=self.song_segments)
         self.state = "stopped"
 
+    def play_handler(self):
+        logger.debug("Sound Played")
+        logger.info(f"Sound Sample rate is {self.samplerate}")
+        self.played.emit("played")
+        self.state = "playing"
+        self._player.start()
+        self._player.play()
+
+    def stop_handler(self):
+        logger.debug("Sound Stopped")
+        self.stopped.emit("stopped")
+        self.state = "stopped"
+        self._player.stop()
+        self.song_segments = [AudioSegment.silent(duration=23)]
+        self._player.chunks = self.song_segments
+        print("stopped")
+
     def setCurrSong(self, song_name, samplerate, channels, duration, chunk_time):
         self.samplerate = samplerate
         self.channels = channels
@@ -49,22 +64,6 @@ class Player(qtw.QWidget):
 
     def update_chunk(self, segment):
         self.song_segments.append(segment)
-        if self.state != "playing":
-            self._player.play()
-            self.state = "playing"
-
-    def play(self):
-        self.played.emit("played")
-
-    def stop(self):
-        self._player.stop()
-        self.played.emit("stopped")
-        self.state = "stopped"
-
-    def pause(self):
-        self._player.stop()
-        self.played.emit("paused")
-        self.state = "paused"
 
 
 class AudioPlayer:
@@ -79,6 +78,7 @@ class AudioPlayer:
         self.playing_thread = threading.Thread(target=self._play, args=(self.samplerate, self.chunk_time))
 
     def setAudio(self, samplerate, channels, duration):
+        logger.debug(f"New sound selected")
         self.curr_chunk = 0
         self.samplerate = samplerate
         self.channels = channels
@@ -98,11 +98,6 @@ class AudioPlayer:
 
     def _play(self, samplerate, chunk_time):
         def __callback(outdata, frames, time, status):
-            print(f"Call back here : curr chunk -> {self.curr_chunk} and chunks -> {len(self.chunks)}")
-            chunk_data = self.chunks[self.curr_chunk]
-            raw_data = self._resize(outdata, chunk_data)
-            outdata[:] = raw_data
-            self.curr_chunk += 1
             if self.stopped:
                 print("Player has stopped")
                 raise sd.CallbackStop()
@@ -110,6 +105,11 @@ class AudioPlayer:
             if self.curr_chunk == len(self.chunks):
                 print("No chunks available")
                 raise sd.CallbackStop()
+
+            chunk_data = self.chunks[self.curr_chunk]
+            raw_data = self._resize(outdata, chunk_data)
+            outdata[:] = raw_data
+            self.curr_chunk += 1
 
         with sd.RawOutputStream(channels=self.channels,
                                 dtype='int16',
@@ -121,16 +121,16 @@ class AudioPlayer:
             sd.sleep(self.song_duration * 1000)
 
     def play(self):
-        self.stopped = False
-        if not self.playing_thread.is_alive():
-            self.playing_thread = threading.Thread(target=self._play, args=(self.samplerate, self.chunk_time))
-            try:
-                self.playing_thread.daemon = True
-                self.playing_thread.start()
-            finally:
-                print("Done")
-        else:
-            self.playing_thread.run()
+        self.playing_thread = threading.Thread(target=self._play, args=(self.samplerate, self.chunk_time))
+        try:
+            self.playing_thread.daemon = True
+            self.playing_thread.start()
+        finally:
+            print("Done")
 
     def stop(self):
         self.stopped = True
+        self.curr_chunk = 0
+
+    def start(self):
+        self.stopped = False

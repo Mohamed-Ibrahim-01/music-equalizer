@@ -3,6 +3,7 @@ from PyQt5 import QtCore as qtc
 from PyQt5 import uic
 from Piano import Keyboard
 from Guitar import Guitar
+from Drums import Drums
 import qtawesome as qta
 
 
@@ -27,12 +28,12 @@ class VirtualInstruments(qtw.QWidget):
 
         piano = Keyboard()
         guitar = Guitar()
-        drum = None
+        drums = Drums()
 
         self.instruments = {
             "Piano": ("mdi.piano", piano, 0),
             "Guitar": ("fa5s.guitar", guitar, 1),
-            "Drum": ("fa5s.drum", drum, 2)
+            "Drum": ("fa5s.drum", drums, 2)
         }
         self.initInstruments()
 

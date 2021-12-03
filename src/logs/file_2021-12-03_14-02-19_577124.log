@@ -1,0 +1,14 @@
+2021-12-03 14:02:45.209 | DEBUG    | Player:setAudio:82 - New sound selected
+2021-12-03 14:02:46.237 | DEBUG    | Player:play_handler:42 - Sound Played
+2021-12-03 14:02:46.239 | INFO     | Player:play_handler:43 - Sound Sample rate is 44100
+2021-12-03 14:02:53.882 | DEBUG    | Player:stop_handler:50 - Sound Stopped
+2021-12-03 14:02:54.959 | DEBUG    | Player:play_handler:42 - Sound Played
+2021-12-03 14:02:54.960 | INFO     | Player:play_handler:43 - Sound Sample rate is 44100
+2021-12-03 14:02:55.236 | DEBUG    | Player:play_handler:42 - Sound Played
+2021-12-03 14:02:55.237 | INFO     | Player:play_handler:43 - Sound Sample rate is 44100
+2021-12-03 14:02:57.373 | DEBUG    | Player:stop_handler:50 - Sound Stopped
+2021-12-03 14:02:58.874 | DEBUG    | Player:play_handler:42 - Sound Played
+2021-12-03 14:02:58.875 | INFO     | Player:play_handler:43 - Sound Sample rate is 44100
+2021-12-03 14:02:59.513 | DEBUG    | Player:play_handler:42 - Sound Played
+2021-12-03 14:02:59.515 | INFO     | Player:play_handler:43 - Sound Sample rate is 44100
+2021-12-03 14:03:01.697 | DEBUG    | Player:stop_handler:50 - Sound Stopped

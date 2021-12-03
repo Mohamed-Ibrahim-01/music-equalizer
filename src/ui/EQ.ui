@@ -17,17 +17,17 @@
    <item row="0" column="0" colspan="3">
     <layout class="QHBoxLayout" name="viewer_layout"/>
    </item>
-   <item row="2" column="0" colspan="2">
-    <layout class="QVBoxLayout" name="loaded_songs_layout"/>
-   </item>
    <item row="2" column="5">
     <layout class="QVBoxLayout" name="player_layout"/>
    </item>
-   <item row="2" column="2" colspan="3">
-    <layout class="QVBoxLayout" name="equalizer_layout"/>
-   </item>
    <item row="0" column="3" colspan="3">
     <layout class="QVBoxLayout" name="specgram_layout"/>
+   </item>
+   <item row="2" column="2" colspan="3">
+    <layout class="QVBoxLayout" name="emphasizer_layout"/>
+   </item>
+   <item row="2" column="0" colspan="2">
+    <layout class="QVBoxLayout" name="loaded_songs_layout"/>
    </item>
   </layout>
  </widget>

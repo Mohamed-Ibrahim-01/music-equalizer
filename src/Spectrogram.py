@@ -18,12 +18,12 @@ def generatePgColormap(cm_name):
     return lut
 
 
-CHUNKSIZE = 512
+CHUNKSIZE = 1024
 SAMPLE_RATE = 44100
 TIME_VECTOR = np.arange(CHUNKSIZE) / SAMPLE_RATE
 N_FFT = 4096
 FREQ_VECTOR = np.fft.rfftfreq(N_FFT, d=TIME_VECTOR[1] - TIME_VECTOR[0])
-WATERFALL_FRAMES = int(1000 * 1024 // N_FFT)
+WATERFALL_FRAMES = int(1000 * 2048 // N_FFT)
 
 
 class Spectrogram(pg.PlotWidget):
@@ -50,7 +50,6 @@ class Spectrogram(pg.PlotWidget):
         self.spectrogram_processing.timeout.connect(self.compute_spectrogram)
         self.plotting_timer.timeout.connect(self.update_image)
 
-    @stopwatch
     def update_image(self):
         arr = np.c_[self.spectrogram_data]
         if arr.size > 0:
@@ -66,13 +65,12 @@ class Spectrogram(pg.PlotWidget):
             stft = np.abs(np.fft.rfft(np.hanning(data.size) * data, n=N_FFT))
             self.spectrogram_data.append(np.log10(stft + 1e-12))
 
-    @stopwatch
     def update_chunk(self, chunk_samples):
         self.spectrogram_chunks.append(chunk_samples)
 
     def start(self):
         self.spectrogram_processing.start(self.timeout)
-        self.plotting_timer.start(2*self.timeout)
+        self.plotting_timer.start(self.timeout)
 
-    def clear(self):
-        pass
+    def stop(self):
+        self.plotting_timer.stop()

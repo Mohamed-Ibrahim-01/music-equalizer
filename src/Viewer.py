@@ -31,5 +31,5 @@ class Viewer(pg.PlotWidget):
         self.audio = chunk
         self.updateGraph()
 
-    def clear(self):
+    def stop(self):
         self.graph.clear()

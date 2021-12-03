@@ -6,15 +6,18 @@ from PyQt5 import uic
 
 class SoundList(qtw.QWidget):
     song_selected = qtc.pyqtSignal(str)
+    volumeChanged = qtc.pyqtSignal(int)
 
     def __init__(self):
         super().__init__()
         uic.loadUi("src/ui/soundlist.ui", self)
         self.setMinimumSize(200, 250)
         self.loaded_songs = self.findChild(qtw.QListWidget, "loaded_songs")
+        self.curr_volume_gain = 0
 
         self.loaded_songs.itemDoubleClicked.connect(self.changeCurrSong)
         self.loaded_songs.currentItemChanged.connect(self.updateSelected)
+        self.volume_slider.valueChanged.connect(self.updateVolume)
 
     def addNewSong(self, name):
         songs_list = self.loaded_songs
@@ -43,3 +46,7 @@ class SoundList(qtw.QWidget):
         color.setColor(qtg.QColor("#2a8aff"))
         curr_song.setBackground(color)
         self.song_selected.emit(self.loaded_songs.itemWidget(curr_song).text())
+
+    def updateVolume(self, volume):
+        self.curr_volume_gain = volume
+        self.volumeChanged.emit(self.curr_volume_gain)

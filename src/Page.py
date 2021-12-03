@@ -31,10 +31,5 @@ class Page(qtw.QTabWidget):
     def initActions(self):
         self.equalizer.stateChanged.connect(
             lambda msg: self.stateChanged.emit(msg)
-            # lambda msg : print(msg)
         )
         self.sound_store.newSignalAdded.connect(self.equalizer.addNewSong)
-
-
-    def updatePage(self):
-        pass

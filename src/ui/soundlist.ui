@@ -62,9 +62,15 @@ font-weight: bold;</string>
     </widget>
    </item>
    <item>
-    <widget class="QSlider" name="volume">
+    <widget class="QSlider" name="volume_slider">
      <property name="toolTip">
       <string>Volume</string>
+     </property>
+     <property name="minimum">
+      <number>-100</number>
+     </property>
+     <property name="maximum">
+      <number>10</number>
      </property>
      <property name="orientation">
       <enum>Qt::Horizontal</enum>

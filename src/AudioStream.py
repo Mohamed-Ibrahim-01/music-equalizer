@@ -23,11 +23,12 @@ class AudioStream(qtw.QWidget):
         self.curr_chunk = 0
         self.song = None
 
-    def setSong(self, song_name, chunksize=512):
+    def setSong(self, song_name, chunksize=1024):
         self.song = self.sound_store.getAudioSegment(song_name)
-        self.chunks = self.sound_store.getChunks(song_name)
+        self.chunks = self.sound_store.getChunks(song_name, chunksize)
         self.chunksize = chunksize
         self.sample_rate = self.song.frame_rate
+        self.curr_chunk = 0
 
     def setChunks(self, chunks):
         self.chunks = chunks
@@ -43,10 +44,8 @@ class AudioStream(qtw.QWidget):
 
     def getChunk(self):
         if self._newChunk():
-            print(len(self.frames), self.curr_chunk, len(self.chunks))
             return self.frames[-1], self.chunks[self.curr_chunk]
 
     def stop(self):
-        print("*****************************************ENDED***************************************")
         self.audioEnded.emit("ended")
         self.curr_chunk = 0

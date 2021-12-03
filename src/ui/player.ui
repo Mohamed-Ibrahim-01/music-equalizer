@@ -22,18 +22,22 @@
     </widget>
    </item>
    <item>
-    <widget class="QPushButton" name="button_pause">
+    <widget class="QPushButton" name="button_stop">
      <property name="text">
       <string/>
      </property>
     </widget>
    </item>
    <item>
-    <widget class="QPushButton" name="button_stop">
-     <property name="text">
-      <string/>
-     </property>
-    </widget>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QRadioButton" name="radioButton">
+       <property name="text">
+        <string>Spectrogram</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>

@@ -1,3 +1,4 @@
+import thread_decorator
 from PyQt5 import QtCore, QtWidgets
 import pysynth_e as ps
 import sounddevice as sd
@@ -37,6 +38,7 @@ class Keyboard(QtWidgets.QWidget):
     def __init__(self, octaves=2, octaveStart=3):
         super().__init__()
         layout = QtWidgets.QGridLayout(self)
+        self.load_tones()
 
         # the ratio between key heights: white keys are 1/3 longer than black ones
         layout.setRowStretch(0, 2)
