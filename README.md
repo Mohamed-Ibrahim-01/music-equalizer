@@ -1,13 +1,13 @@
 # Music Equalizer and Virtual Instruments
 - [Features](#features)
 - [Demos](#demos)
-    -[Volume Demo](#volume-change-demo)
-    -[Equalizer Demo](#equalizer-change-demo)
-    -[Instruments Demo](#equalizer-change-demo)
+    - [Volume Demo](#volume-change-demo)
+    - [Equalizer Demo](#equalizer-change-demo)
+    - [Instruments Demo](#instruments-demo)
 
 
 ## Features
-- Real time plotting for the aduio
+- Real time plotting for the audio
 - Real time Spectrum analysis with the spectrogram.
 - Real time equalizer with the provided frequncy ranges
 - Volume changing
@@ -23,7 +23,7 @@
 ### Equalizer change demo
 ![equalizer](./docs/sliders.gif)
 
-### Equalizer change demo
+### Instruments Demo
 ![instruments](./docs/virtual-instruments.jpg)
 
 
