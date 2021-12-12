@@ -114,15 +114,15 @@ class EQ(qtw.QWidget):
         processed_segment = chunk_segment
         if self.sliders_gains["Snare"] != 0:
             processed_segment = scipy_effects.eq(
-                chunk_segment, 74, bandwidth=74, gain_dB=self.sliders_gains["Snare"], order=8
+                chunk_segment, 1000, bandwidth=100, gain_dB=self.sliders_gains["Snare"], order=8
             )
         if self.sliders_gains["Piano"] != 0:
             processed_segment = scipy_effects.eq(
-                processed_segment, 116, bandwidth=116, gain_dB=self.sliders_gains["Piano"], order=8
+                processed_segment, 10000, bandwidth=2000, gain_dB=self.sliders_gains["Piano"], order=8
             )
         if self.sliders_gains["Piccolo"] != 0:
             processed_segment = scipy_effects.eq(
-                processed_segment, 1714, bandwidth=1714, gain_dB=self.sliders_gains["Piccolo"], order=8
+                processed_segment, 5000, bandwidth=1000, gain_dB=self.sliders_gains["Piccolo"], order=8
             )
         return processed_segment
 
