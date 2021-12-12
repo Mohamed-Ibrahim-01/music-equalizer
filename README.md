@@ -7,7 +7,7 @@
 
 
 ## Features
-- Real time plotting for the aduio
+- Real time plotting for the audio
 - Real time Spectrum analysis with the spectrogram.
 - Real time equalizer with the provided frequncy ranges
 - Volume changing
