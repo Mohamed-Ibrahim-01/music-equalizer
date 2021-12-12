@@ -3,7 +3,7 @@
 - [Demos](#demos)
     - [Volume Demo](#volume-change-demo)
     - [Equalizer Demo](#equalizer-change-demo)
-    - [Instruments Demo](#equalizer-change-demo)
+    - [Instruments Demo](#instruments-demo)
 
 
 ## Features
@@ -23,7 +23,7 @@
 ### Equalizer change demo
 ![equalizer](./docs/sliders.gif)
 
-### Equalizer change demo
+### Instruments Demo
 ![instruments](./docs/virtual-instruments.jpg)
 
 
