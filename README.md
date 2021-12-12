@@ -1,5 +1,5 @@
 # Music Equalizer and Virtual Instruments
-- [Features(#features)
+- [Features](#features)
 - [Demos](#demos)
 
 
@@ -19,4 +19,8 @@
 
 ### Equalizer change demo
 ![equalizer](./docs/sliders.gif)
+
+### Equalizer change demo
+![instruments](./docs/virtual-instruments.jpg)
+
 
