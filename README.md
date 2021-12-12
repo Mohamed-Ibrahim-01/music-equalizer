@@ -1,5 +1,5 @@
-#Volume change demo
+# Volume change demo
 ![volume](./docs/volume.gif)
 
-#Equalizer change demo
+# Equalizer change demo
 ![eqalizer](./docs/sliders.gif)
