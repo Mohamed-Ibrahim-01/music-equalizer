@@ -1,6 +1,9 @@
 # Music Equalizer and Virtual Instruments
 - [Features](#features)
 - [Demos](#demos)
+    -[Volume Demo](#volume-change-demo)
+    -[Equalizer Demo](#equalizer-change-demo)
+    -[Instruments Demo](#equalizer-change-demo)
 
 
 ## Features
