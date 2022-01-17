@@ -12,21 +12,23 @@ class Equalizer(qtw.QWidget):
         uic.loadUi("src/ui/equalizer.ui", self)
 
         low_freq_icon_set = {"Piano": "mdi.piano",
-                             "Electric Instruments": "mdi.guitar-electric",
-                             "Violin": "mdi.violin",
-                             "Male Voice": "mdi6.face-man-outline"
-                             }
+            "Electric Instruments": "mdi.guitar-electric",
+            "Violin": "mdi.violin",
+            "Male Voice": "mdi6.face-man-outline"
+        }
 
-        mid_freq_icon_set = {"Guitar": "fa5s.guitar",
-                             "Trumpet": "mdi.trumpet",
-                             "SaxPhone": "mdi.saxophone",
-                             "Female Voice": "mdi.face-woman-outline"
-                             }
+        mid_freq_icon_set = {
+            "Guitar": "fa5s.guitar",
+            "Trumpet": "mdi.trumpet",
+            "SaxPhone": "mdi.saxophone",
+            "Female Voice": "mdi.face-woman-outline"
+        }
 
-        high_freq_icon_set = {"Piano": "mdi.piano",
-                              "Electric Instruments": "mdi.guitar-electric",
-                              "Flute": "ph.magic-wand-thin",
-                              }
+        high_freq_icon_set = {
+            "Piano": "mdi.piano",
+            "Electric Instruments": "mdi.guitar-electric",
+            "Flute": "ph.magic-wand-thin",
+        }
 
         self.icons_group = (self.low_freq_icons, self.mid_freq_icons, self.high_freq_icons)
         self.icons = (low_freq_icon_set, mid_freq_icon_set, high_freq_icon_set)

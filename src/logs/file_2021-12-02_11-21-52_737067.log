@@ -1,3 +1,0 @@
-2021-12-02 11:22:47.265 | DEBUG    | Player:setAudio:97 - New sound selected
-2021-12-02 11:22:49.325 | DEBUG    | Player:play_handler:44 - Sound Played
-2021-12-02 11:22:49.326 | INFO     | Player:play_handler:45 - Sound Sample rate is 44100

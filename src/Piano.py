@@ -38,7 +38,8 @@ class Keyboard(QtWidgets.QWidget):
     def __init__(self, octaves=2, octaveStart=3):
         super().__init__()
         layout = QtWidgets.QGridLayout(self)
-        self.load_tones()
+        #threading.Thread(target=self.load_tones, args=()).start()
+
 
         # the ratio between key heights: white keys are 1/3 longer than black ones
         layout.setRowStretch(0, 2)

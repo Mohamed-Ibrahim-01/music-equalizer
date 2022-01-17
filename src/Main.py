@@ -1,5 +1,5 @@
 import sys
-import utils
+import Utils
 import qdarkstyle
 from Page import Page
 from PyQt5 import QtWidgets as qtw
@@ -46,7 +46,7 @@ class MainWindow(qtw.QMainWindow):
         open_file.triggered.connect(self.loadSound)
 
     def loadSound(self):
-        loaded, name, path = utils.openSound(self)
+        loaded, name, path = Utils.openSound(self)
         if loaded:
             channel_idx = self.sound_store.addSignal((name, path))
             if channel_idx is not None:

@@ -13,21 +13,29 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0" colspan="3">
-    <layout class="QHBoxLayout" name="viewer_layout"/>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <layout class="QHBoxLayout" name="viewer_layout"/>
+     </item>
+     <item>
+      <layout class="QVBoxLayout" name="specgram_layout"/>
+     </item>
+    </layout>
    </item>
-   <item row="2" column="5">
-    <layout class="QVBoxLayout" name="player_layout"/>
-   </item>
-   <item row="0" column="3" colspan="3">
-    <layout class="QVBoxLayout" name="specgram_layout"/>
-   </item>
-   <item row="2" column="2" colspan="3">
-    <layout class="QVBoxLayout" name="emphasizer_layout"/>
-   </item>
-   <item row="2" column="0" colspan="2">
-    <layout class="QVBoxLayout" name="loaded_songs_layout"/>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <layout class="QVBoxLayout" name="player_layout"/>
+     </item>
+     <item>
+      <layout class="QVBoxLayout" name="loaded_songs_layout"/>
+     </item>
+     <item>
+      <layout class="QVBoxLayout" name="emphasizer_layout"/>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>

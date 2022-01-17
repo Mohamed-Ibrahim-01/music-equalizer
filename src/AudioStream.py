@@ -1,9 +1,6 @@
-from pydub import AudioSegment
 from SignalsStore import SignalsStore
 from PyQt5 import QtCore as qtc
-import pyaudio
 import numpy as np
-import threading
 from PyQt5 import QtCore as qtc
 from PyQt5 import QtWidgets as qtw
 from collections import deque
@@ -19,8 +16,9 @@ class AudioStream(qtw.QWidget):
 
         self.chunks = []
         self.chunksize = 0
-        self.sample_rate = 0
         self.curr_chunk = 0
+
+        self.sample_rate = 0
         self.song = None
 
     def setSong(self, song_name, chunksize=1024):
@@ -29,6 +27,7 @@ class AudioStream(qtw.QWidget):
         self.chunksize = chunksize
         self.sample_rate = self.song.frame_rate
         self.curr_chunk = 0
+        self.frames = deque(maxlen=10)
 
     def setChunks(self, chunks):
         self.chunks = chunks
